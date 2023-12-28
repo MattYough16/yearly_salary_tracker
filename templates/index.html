@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: darkgrey;
+            color: black;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-margin {
+            margin-right: 20px;
+        }
+
+        .textbox-margin {
+            margin-right: 20px;
+            margin-left: 5px;
+        }
+
+        input[type="text"], input[type="checkbox"], button {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Salary App</h1>
+    <form method="post" action="{{url_for('process_amount')}}">
+        <div class="flex-container">
+            <p>Makeup:</p>
+            <input type="checkbox" id="bmakeup" name="bmakeup" class="checkbox-margin">
+            <p>Esthetician:</p>
+            <input type="checkbox" id="best" name="best" class="checkbox-margin">
+            <p>Bartending:</p>
+            <input type="checkbox" id="bbar" name="bbar" class="checkbox-margin">
+        </div>
+
+        <div class="flex-container">
+            <p style="margin-right: 20px;">Income:</p>
+            <input type="checkbox" id="bincome" name="bincome" class="checkbox-margin">
+            <p style="margin-left: 20px;">Expense:</p>
+            <input type="checkbox" id="bexpense" name="bexpense" class="checkbox-margin">
+        </div>
+
+        <div class="flex-container">
+            <p>Dollar Amount $</p>
+            <input type="text" id="amount" name = "amount" class="textbox-margin">
+            <button>Enter Amount</button>
+            <p style="margin-left: 20px;">Status:</p>
+            <input type="text" class="textbox-margin" value="{{status}}">
+        </div>
+    </form> 
+
+    <br>
+    <br>
+
+    <form method="post" action="{{url_for('process_salary')}}">
+        <div class="flex-container">
+            <p>Year:</p>
+            <input type="text" id="year" name="year" class="textbox-margin" value="{{year}}">
+            <button>Display Salary</button>
+            <p style="margin-left: 20px;">Net:</p>
+            <input type="checkbox" id="bnet" name="bnet">
+            <p style="margin-left: 20px;">Gross:</p>
+            <input type="checkbox" id="bgross" name="bgross">
+        </div>
+    
+
+        <br>
+
+        <div class="flex-container">
+            <label for="net">Salary:</label>
+            <input type="text" id="net" class="textbox-margin" value="{{salary}}">
+        </div>
+    </form>
+
+    <br>
+    <br>
+
+    <form method="get" action="{{url_for('display_data')}}">
+        <div class="flex-container">
+            <button>See Salary Data</button>
+        </div>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Data Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Excel Data Table</h1>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                {% for column in header %}
+                    <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    {% for value in row %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button onclick="removeSelectedRows()">Remove Selected Rows</button>
+    <button onclick="downloadExcel()">Download Excel</button>
+
+    <script>
+        function removeSelectedRows() {
+            var table = document.getElementById('data-table');
+            var checkboxes = table.getElementsByClassName('row-checkbox');
+            var rowsToRemove = [];
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    rowsToRemove.push(i);
+                }
+            }
+
+            for (var i = rowsToRemove.length - 1; i >= 0; i--) {
+                table.deleteRow(rowsToRemove[i] + 1); // Adding 1 to account for the header row
+            }
+        }
+
+        function downloadExcel() {
+            // Logic to gather the updated data and send it to the Flask app for download
+            var table = document.getElementById('data-table');
+            var data = [];
+
+            // Iterate over rows
+            for (var i = 0; i < table.rows.length; i++) {
+                var row = table.rows[i];
+                var rowData = [];
+
+                // Iterate over cells in the row
+                for (var j = 1; j < row.cells.length; j++) {
+                    rowData.push(row.cells[j].innerText);
+                }
+
+                data.push(rowData);
+            }
+
+            // Send the data to the Flask app
+            fetch('/download_excel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ data: data }),
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                var a = document.createElement('a');
+                a.href = window.URL.createObjectURL(blob);
+                a.download = 'salary_data.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        }
+    </script>
+
+<br>
+
+<form method="get" action="{{url_for('salary_app')}}">
+    <div class="flex-container">
+        <button>Home</button>
+    </div>
+</form>
+
+</body>
+</html>
