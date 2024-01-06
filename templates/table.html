@@ -53,6 +53,7 @@
     </table>
 
     <button onclick="removeSelectedRows()">Remove Selected Rows</button>
+    <button id="overwrite-btn">Save New Data</button>
     <button onclick="downloadExcel()">Download Excel</button>
 
     <script>
@@ -108,6 +109,51 @@
                 document.body.removeChild(a);
             });
         }
+
+        // Function to handle the button click
+        async function handleOverwriteClick() {
+            try {
+                // Get HTML table data
+                const table = document.getElementById('data-table');
+                const rows = table.rows;
+
+                // Create an array to store the table data
+                const tableData = [];
+
+                // Iterate through rows and cells to collect data
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const rowData = [];
+
+                    for (let j = 1; j < row.cells.length; j++) {
+                        rowData.push(row.cells[j].innerText);
+                    }
+
+                    tableData.push(rowData);
+                }
+
+                // Make an asynchronous request to the Flask backend
+                const response = await fetch('/overwrite_excel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ data: tableData }),
+                });
+
+                // Check if the request was successful
+                if (response.ok) {
+                    console.log('Excel file overwritten successfully!');
+                } else {
+                    console.error('Failed to overwrite Excel file.');
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        }
+
+        // Attach the handleOverwriteClick function to the button's click event
+        document.getElementById('overwrite-btn').addEventListener('click', handleOverwriteClick);
     </script>
 
 <br>
